@@ -23,6 +23,9 @@ func ReadFile(filename string) {
 func main() {
 	fp, err := ioutil.TempFile("./dir", "__prefix__")
 
+	defer os.Remove(fp.Name())
+	defer fp.Close()
+
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -32,13 +35,13 @@ func main() {
 	fmt.Printf("%v \n", fp.Name())
 	fmt.Println()
 
-	os.Remove(fp.Name())
-	defer fp.Close()
-
 	b := []byte(`hoge
 foobar`)
 
 	fp2, err := ioutil.TempFile("", "")
+
+	defer os.Remove(fp2.Name())
+	defer fp2.Close()
 
 	if err != nil {
 		fmt.Println(err)
@@ -50,7 +53,4 @@ foobar`)
 	ioutil.WriteFile(fp2.Name(), b, 0644)
 
 	ReadFile(fp2.Name())
-
-	os.Remove(fp2.Name())
-	defer fp2.Close()
 }
